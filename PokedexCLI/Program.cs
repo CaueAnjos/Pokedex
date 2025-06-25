@@ -32,7 +32,7 @@ internal class Program
                     Pokemon pokemon = await api.GetPokemonInfoAsync(
                         parseResult.GetValue(nameArgument) ?? ""
                     );
-                    Console.WriteLine(pokemon);
+                    pokemon.PrintBeautiful();
                 }
             }
         );
