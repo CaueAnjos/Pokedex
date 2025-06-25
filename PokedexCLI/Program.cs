@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using PokedexCLI;
+using PokedexCLI.Commands;
 using PokedexCLI.Models;
 
 internal class Program
@@ -35,6 +36,8 @@ internal class Program
                 }
             }
         );
+
+        rootCommand.Subcommands.Add(new TamagotchiCommand());
 
         ParseResult parseResult = rootCommand.Parse(args);
         return await parseResult.InvokeAsync();
