@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dumpify" Version="0.6.6" />
+    <PackageReference Include="Spectre.Console" Version="0.50.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta5.25306.1" />
   </ItemGroup>
 

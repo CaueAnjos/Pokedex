@@ -2,6 +2,8 @@
 using PokedexCLI;
 using PokedexCLI.Commands;
 using PokedexCLI.Models;
+using Spectre.Console;
+using Spectre.Console.Extensions;
 
 internal class Program
 {
@@ -30,15 +32,17 @@ internal class Program
         if (isJson is not null && isJson.Value)
         {
             string json = await api.GetJsonPokemonInfoAsync(
-                parseResult.GetValue(nameArgument) ?? ""
-            );
+                    parseResult.GetValue(nameArgument) ?? ""
+                )
+                .Spinner();
             Console.WriteLine(json);
         }
         else
         {
             Pokemon pokemon = await api.GetPokemonInfoAsync(
-                parseResult.GetValue(nameArgument) ?? ""
-            );
+                    parseResult.GetValue(nameArgument) ?? ""
+                )
+                .Spinner();
             pokemon.PrintBeautiful();
         }
     }
