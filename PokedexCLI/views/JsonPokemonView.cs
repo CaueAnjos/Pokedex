@@ -1,5 +1,4 @@
 using Spectre.Console;
-using Spectre.Console.Extensions;
 using Spectre.Console.Json;
 
 namespace PokedexCLI.Views;
@@ -15,8 +14,11 @@ internal class JsonPokemonView : View
 
     public async Task PrintAsync()
     {
-        AnsiConsole.MarkupLine("[yellow]Loading json...[/]");
-        var json = new JsonText(await _task.Spinner());
+        string jsonStr = await _task
+            .Loading()
+            .WithLoadingMessage("[gray]Getting pokemon info...[/]")
+            .PrintAsync();
+        var json = new JsonText(jsonStr);
         AnsiConsole.Write(
             new Panel(json).Header("JSON").Collapse().RoundedBorder().BorderColor(Color.Yellow)
         );
