@@ -16,8 +16,8 @@ internal static class CommandController
 
     public static async Task RootView(Task<Pokemon> pokemon)
     {
-        await Task.Delay(50);
-        throw new NotImplementedException();
+        PokemonView view = new(pokemon);
+        await view.PrintAsync();
     }
 
     public static async Task<int> RunAsync(string[] args)

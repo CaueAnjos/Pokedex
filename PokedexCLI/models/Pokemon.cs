@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace PokedexCLI.Models;
 
 #nullable disable
-public partial class Pokemon
+public class Pokemon
 {
     [JsonPropertyName("abilities")]
     public List<PokemonAbility> Abilities { get; set; }

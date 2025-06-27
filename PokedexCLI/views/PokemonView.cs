@@ -1,14 +1,28 @@
+using PokedexCLI.Models;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
-namespace PokedexCLI.Models;
+namespace PokedexCLI.Views;
 
-public partial class Pokemon
+internal class PokemonView : View
 {
-    public void PrintBeautiful()
+    public PokemonView(Task<Pokemon> pokemon)
     {
+        _task = pokemon;
+    }
+
+    private Task<Pokemon> _task;
+    private Pokemon _pokemon = new();
+
+    public async Task PrintAsync()
+    {
+        _pokemon = await _task.Loading().PrintAsync();
+
+        AnsiConsole.Clear();
+
         Panel panel = new Panel(CreatePokemonLayout())
-            .Header($"[bold yellow]🌟 {Name.ToUpper()} #{Id}[/]")
+            .Header($"[bold yellow]:glowing_star: {_pokemon.Name.ToUpper()} #{_pokemon.Id}[/]")
+            .Collapse()
             .BorderColor(Color.Gold1)
             .Border(BoxBorder.Double);
 
@@ -48,27 +62,29 @@ public partial class Pokemon
             .AddColumn(new TableColumn("").Width(15));
 
         table.AddRow(
-            $"[bold]Height:[/] [cyan]{Height / 10.0:F1}m[/]",
-            $"[bold]Weight:[/] [cyan]{Weight / 10.0:F1}kg[/]",
-            $"[bold]Base XP:[/] [cyan]{BaseExperience}[/]"
+            $"[bold]Height:[/] [cyan]{_pokemon.Height / 10.0:F1}m[/]",
+            $"[bold]Weight:[/] [cyan]{_pokemon.Weight / 10.0:F1}kg[/]",
+            $"[bold]Base XP:[/] [cyan]{_pokemon.BaseExperience}[/]"
         );
 
-        return new Panel(table).Header("[bold blue]📊 Basic Info[/]").Border(BoxBorder.None);
+        return new Panel(table)
+            .Header("[bold blue]:bar_chart: Basic Info[/]")
+            .Border(BoxBorder.None);
     }
 
     private Panel CreateTypesPanel()
     {
-        if (Types.Any() != true)
+        if (_pokemon.Types.Any() != true)
         {
             return new Panel("[dim]No type data[/]")
-                .Header("[bold green] Types[/]")
+                .Header("[bold green]:label: Types[/]")
                 .BorderColor(Color.Green);
         }
 
         var typeMarkup = new Markup(
             string.Join(
                 "\n",
-                Types.Select(t =>
+                _pokemon.Types.Select(t =>
                 {
                     var emoji = GetTypeEmoji(t.Type.Name);
                     var color = GetTypeColor(t.Type.Name);
@@ -78,23 +94,23 @@ public partial class Pokemon
         );
 
         return new Panel(typeMarkup)
-            .Header("[bold green] Types[/]")
+            .Header("[bold green]:label: Types[/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Blue);
     }
 
     private Panel CreateStatsPanel()
     {
-        if (Stats.Any() != true)
+        if (_pokemon.Stats.Any() != true)
         {
             return new Panel("[dim]No stat data[/]")
-                .Header("[bold red]📈 Stats[/]")
+                .Header("[bold red]:abacus: Stats[/]")
                 .BorderColor(Color.Red);
         }
 
         var barChart = new BarChart().Width(50);
 
-        foreach (var stat in Stats)
+        foreach (var stat in _pokemon.Stats)
         {
             var statName = FormatStatName(stat.Stat.Name);
             var statValue = stat.BaseStat;
@@ -103,23 +119,23 @@ public partial class Pokemon
         }
 
         return new Panel(barChart)
-            .Header("[bold red]📈 Stats[/]")
+            .Header("[bold red]:abacus: Stats[/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Red);
     }
 
     private Panel CreateAbilitiesPanel()
     {
-        if (Abilities?.Any() != true)
+        if (_pokemon.Abilities.Any() != true)
         {
             return new Panel("[dim]No abilities data[/]")
-                .Header("[bold yellow]⚡ Abilities[/]")
+                .Header("[bold yellow]:high_voltage: Abilities[/]")
                 .BorderColor(Color.Yellow);
         }
 
         var content = string.Join(
             "\n",
-            Abilities.Select(ability =>
+            _pokemon.Abilities.Select(ability =>
             {
                 var hiddenText = ability.IsHidden ? " [dim](Hidden)[/]" : "";
                 var abilityName = ability.Ability.Name.Replace("-", " ");
@@ -128,21 +144,21 @@ public partial class Pokemon
         );
 
         return new Panel(new Markup(content))
-            .Header("[bold yellow]⚡ Abilities[/]")
+            .Header("[bold yellow]:high_voltage: Abilities[/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Yellow);
     }
 
     private Panel CreateMovesPanel()
     {
-        if (Moves.Any() != true)
+        if (_pokemon.Moves.Any() != true)
         {
             return new Panel("[dim]No moves data[/]")
-                .Header("[bold purple]🥊 Sample Moves[/]")
+                .Header("[bold purple]:boxing_glove: Sample Moves[/]")
                 .BorderColor(Color.Purple);
         }
 
-        var sampleMoves = Moves.Take(5);
+        var sampleMoves = _pokemon.Moves.Take(5);
         var content = string.Join(
             "\n",
             sampleMoves.Select(move =>
@@ -152,34 +168,34 @@ public partial class Pokemon
             })
         );
 
-        if (Moves.Count > 5)
+        if (_pokemon.Moves.Count > 5)
         {
-            content += $"\n[dim]... and {Moves.Count - 5} more moves[/]";
+            content += $"\n[dim]... and {_pokemon.Moves.Count - 5} more moves[/]";
         }
 
         return new Panel(new Markup(content))
-            .Header("[bold purple]🥊 Sample Moves[/]")
+            .Header("[bold purple]:boxing_glove: Sample Moves[/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Purple);
     }
 
     private Panel CreateSpritesPanel()
     {
-        if (Sprites.FrontDefault == null)
+        if (_pokemon.Sprites.FrontDefault == null)
         {
             return new Panel("[dim]No sprite data[/]")
-                .Header("[bold cyan] Sprites[/]")
+                .Header("[bold cyan]:framed_picture: Sprites[/]")
                 .BorderColor(Color.DarkCyan);
         }
 
         var content = "";
-        if (!string.IsNullOrEmpty(Sprites.FrontDefault))
-            content += $"[bold]Default:[/] [link]{Sprites.FrontDefault}[/]\n";
-        if (!string.IsNullOrEmpty(Sprites.FrontShiny))
-            content += $"[bold]Shiny:[/] [link]{Sprites.FrontShiny}[/]";
+        if (!string.IsNullOrEmpty(_pokemon.Sprites.FrontDefault))
+            content += $"[bold]Default:[/] [link]{_pokemon.Sprites.FrontDefault}[/]\n";
+        if (!string.IsNullOrEmpty(_pokemon.Sprites.FrontShiny))
+            content += $"[bold]Shiny:[/] [link]{_pokemon.Sprites.FrontShiny}[/]";
 
         return new Panel(new Markup(content.Trim()))
-            .Header("[bold cyan] Sprites[/]")
+            .Header("[bold cyan]:framed_picture: Sprites[/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.DarkCyan);
     }
@@ -188,25 +204,25 @@ public partial class Pokemon
     {
         return typeName?.ToLower() switch
         {
-            "normal" => "⚪",
-            "fire" => "🔥",
-            "water" => "💧",
-            "electric" => "⚡",
-            "grass" => "🌿",
-            "ice" => "❄️",
-            "fighting" => "👊",
-            "poison" => "☠️",
-            "ground" => "🌍",
-            "flying" => "🕊️",
-            "psychic" => "🔮",
-            "bug" => "🐛",
-            "rock" => "🪨",
-            "ghost" => "👻",
-            "dragon" => "🐉",
-            "dark" => "🌙",
-            "steel" => "⚙️",
-            "fairy" => "🧚",
-            _ => "❓",
+            "normal" => ":white_circle:",
+            "fire" => ":fire:",
+            "water" => ":water_wave:",
+            "electric" => ":high_voltage:",
+            "grass" => ":leafy_green:",
+            "ice" => ":snowflake:",
+            "fighting" => ":flexed_biceps:",
+            "poison" => ":skull:",
+            "ground" => ":globe_showing_americas:",
+            "flying" => ":fly:",
+            "psychic" => ":brain:",
+            "bug" => ":bug:",
+            "rock" => ":rock:",
+            "ghost" => ":ghost:",
+            "dragon" => ":dragon_face:",
+            "dark" => ":new_moon_face:",
+            "steel" => ":gear:",
+            "fairy" => ":fairy:",
+            _ => ":red_question_mark:",
         };
     }
 
