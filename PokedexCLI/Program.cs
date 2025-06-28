@@ -1,21 +1,20 @@
-﻿using PokedexCLI.Controllers;
-using Spectre.Console;
+﻿using PokedexCLI.Controllers.Commands;
+using Spectre.Console.Cli;
 
 internal class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        try
+        var app = new CommandApp();
+        app.Configure(config =>
         {
-            return await CommandController.RunAsync(args);
-        }
-        catch (Exception ex)
-        {
-            AnsiConsole.WriteException(
-                ex,
-                ExceptionFormats.ShortenEverything | ExceptionFormats.ShowLinks
-            );
-            return ex.HResult;
-        }
+            config
+                .AddCommand<LookCommand>("look")
+                .WithAlias("info")
+                .WithDescription("Consulta informações sobre o pokemon")
+                .WithExample("look", "pikachu", "--json")
+                .WithExample("info", "pikachu");
+        });
+        return await app.RunAsync(args);
     }
 }

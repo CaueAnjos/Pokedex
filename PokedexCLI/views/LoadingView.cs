@@ -12,8 +12,8 @@ internal class LoadingView<T> : View<T>
 
     public Spinner LoadingSpinner { get; set; } = Spinner.Known.SimpleDots;
     public string LoadingSpinnerStyle { get; set; } = "gray";
-    public string LoadingMessage { get; set; } = "[gray]Loading[/]";
-    public string CompleteMessage { get; set; } = "[green]Done![/]";
+    public string LoadingMessage { get; set; } = "[gray]Loading [/]";
+    public string CompleteMessage { get; set; } = "[green]Done! [/]";
     public Task<T> LoadingTask { get; set; }
 
     public async Task<T> PrintAsync()
