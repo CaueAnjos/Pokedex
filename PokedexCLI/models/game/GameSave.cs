@@ -25,7 +25,16 @@ internal class GameSave
     public string Name { get; init; }
     public Pet Pet { get; set; }
 
-    public static List<GameSave> SavedGames { get; set; } = new();
+    public static IEnumerable<GameSave> GetSavedGames()
+    {
+        var files = Directory.GetFiles(SavesFilePath);
+        foreach (string file in files)
+        {
+            GameSave? gameSave = Load(Path.GetFileNameWithoutExtension(file));
+            if (gameSave is not null)
+                yield return gameSave;
+        }
+    }
 
     private static string SavesFilePath =>
         Path.Combine(

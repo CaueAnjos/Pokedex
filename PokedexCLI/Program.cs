@@ -14,6 +14,8 @@ internal class Program
                 .WithDescription("Consulta informações sobre o pokemon")
                 .WithExample("look", "pikachu", "--json")
                 .WithExample("info", "pikachu");
+
+            config.AddCommand<GameCommand>("game").IsHidden();
         });
         return await app.RunAsync(args);
     }
