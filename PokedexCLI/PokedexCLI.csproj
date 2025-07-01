@@ -1,18 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-  <ItemGroup>
-    <PackageReference Include="Dumpify" Version="0.6.6" />
-    <PackageReference Include="Spectre.Console" Version="0.50.0" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.50.0" />
-    <PackageReference Include="Spectre.Console.Json" Version="0.50.0" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta5.25306.1" />
-  </ItemGroup>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>pokedex</ToolCommandName>
+        <PackageOutputPath>../nupkg</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console" Version="0.50.0" />
+        <PackageReference Include="Spectre.Console.Cli" Version="0.50.0" />
+        <PackageReference Include="Spectre.Console.Json" Version="0.50.0" />
+    </ItemGroup>
 
 </Project>
