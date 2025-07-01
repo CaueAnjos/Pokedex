@@ -10,7 +10,7 @@
         <ToolCommandName>pokedex</ToolCommandName>
         <PackageOutputPath>../nupkg</PackageOutputPath>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicense>LICENSE</PackageLicense>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
         <Version>0.0.0</Version>
     </PropertyGroup>
