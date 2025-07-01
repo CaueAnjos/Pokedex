@@ -9,9 +9,17 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>pokedex</ToolCommandName>
         <PackageOutputPath>../nupkg</PackageOutputPath>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicense>LICENSE</PackageLicense>
 
         <Version>0.0.0</Version>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
 
     <ItemGroup>
         <PackageReference Include="Spectre.Console" Version="0.50.0" />
